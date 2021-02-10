@@ -1,0 +1,41 @@
+version: '3'
+services:
+
+  app-django:
+    build:
+      context: django
+      dockerfile: Dockerfile
+    container_name: app-django
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    tty: true
+    environment:
+      VERIFICATION_TOKEN: xxx
+      BOT_USER_ACCESS_TOKEN: xxx
+      AWS_ACCESS_KEY_ID: xxx
+      AWS_SECRET_ACCESS_KEY: xxx
+      AWS_DEFAULT_REGION: us-east-1
+    networks:
+      - app-network
+
+  app-dlp:
+    build:
+      context: dlp
+      dockerfile: Dockerfile
+    container_name: app-dlp
+    ports:
+      - "8001:8001"
+    restart: unless-stopped
+    tty: true
+    environment:
+      AWS_ACCESS_KEY_ID: xxx
+      AWS_SECRET_ACCESS_KEY: xxx
+      AWS_DEFAULT_REGION: us-east-1
+    networks:
+      - app-network
+
+
+networks:
+  app-network:
+    driver: bridge
