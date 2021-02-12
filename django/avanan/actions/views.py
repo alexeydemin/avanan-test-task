@@ -33,8 +33,10 @@ def write_to_queue_for_dlp(msg):
     serialised_body = json.dumps(body)
     body_str = json.dumps(serialised_body)
 
+    print('\n=== Writing a message to queue === ')
     response = queue.send_message(MessageBody=body_str)
     print(response)
+    print('=== End of writing a message to queue ===\n')
 
 
 def save_entries_to_db(payload):
@@ -43,7 +45,6 @@ def save_entries_to_db(payload):
     text = payload["text"]
 
     for problem in problems:
-        print(problem)
         # problems_titles.append(problem['title'])
         entry = Entry(
             pattern_title=problem["title"],
@@ -59,11 +60,16 @@ def save_entries_to_db(payload):
 
 @csrf_exempt
 def entry_hook(request):
-    print(request)
     json_dict = json.loads(request.body.decode('utf-8'))
+
+    print('\n=== Request from DLP === ')
     print(json_dict)
-    print('Saving bad entries to the DB...')
+    print('=== End of request from DLP ===\n')
+
+    print('\n==== Saving bad entries to the DB... ===')
     save_entries_to_db(json_dict)
+    print('=== Saved ===\n')
+
     return HttpResponse(status=status.HTTP_200_OK)
 
 
@@ -71,7 +77,11 @@ def entry_hook(request):
 def slack_hook(request):
     client = slack.WebClient(token=settings.BOT_USER_ACCESS_TOKEN)
     json_dict = json.loads(request.body.decode('utf-8'))
+
+    print('\n=== Request from Slack === ')
     print(json_dict)
+    print('=== End of request from Slack ===\n ')
+
     if json_dict['token'] != settings.VERIFICATION_TOKEN:
         return HttpResponse(status=status.HTTP_403_FORBIDDEN)
 

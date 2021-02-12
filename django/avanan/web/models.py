@@ -10,6 +10,7 @@ class Pattern(models.Model):
     def __str__(self):
         return self.title
 
+
 class Entry(models.Model):
     pattern_title = models.CharField(max_length=255, null=True, blank=True)
     pattern_content = models.TextField(null=True, blank=True)

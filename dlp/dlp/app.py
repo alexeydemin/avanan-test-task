@@ -3,6 +3,7 @@ import json
 import boto3
 import re
 import requests
+import aiobotocore
 
 
 class Manager:
@@ -22,7 +23,7 @@ class Manager:
         pass
 
     async def main(self):
-        print('We are in main func')
+        print('Listener started')
         while True:
             messages = await self._get_messages()
             for message in messages:
@@ -51,12 +52,15 @@ async def dlp_check_patterns(patterns, file):
         if re.search(pattern['content'], file):
             found_patterns.append(pattern)
 
-    print('Found patterns:')
+    print(' === Found patterns ===')
     print(found_patterns)
-    print("Sending request back to Django")
-    json = {"found_patterns": found_patterns, 'text': file}
-    requests.post(url='http://app-django:8000/event/entry_hook/', json=json)
+    print(' === End patterns ===')
 
+    json = {"found_patterns": found_patterns, 'text': file}
+
+    print("Sending request back to Django...")
+    requests.post(url='http://app-django:8000/event/entry_hook/', json=json)
+    print("Sent!")
 
 tasks = {
     'dlp_check_patterns': dlp_check_patterns,
