@@ -1,7 +1,7 @@
 import asyncio
 import json
 import re
-import requests
+import httpx
 import aiobotocore
 
 
@@ -22,7 +22,7 @@ class Manager:
                 receipt_handle = message['ReceiptHandle']
                 del_response = await client.delete_message(QueueUrl=queue_url, ReceiptHandle=receipt_handle)
 
-                print('\nDeleting message %s with' % message['Body'])
+                print('\nDeleting message %s' % message['Body'])
                 print(del_response)
                 print('Deleted\n')
 
@@ -58,13 +58,9 @@ class Manager:
 
             task = self.tasks.get(task_name)
             self.loop.create_task(task(*args, **kwargs))
-            #message.delete()
 
             await asyncio.sleep(1)
 
-
-# sqs = boto3.resource('sqs')
-# queue = sqs.get_queue_by_name(QueueName='toDlp')
 
 async def dlp_check_patterns(patterns, file):
     print(f'We are checking patterns in ["{file}"]')
@@ -81,7 +77,9 @@ async def dlp_check_patterns(patterns, file):
     if found_patterns:
         json_payload = {"found_patterns": found_patterns, 'text': file}
         print("Sending request back to Django...")
-        requests.post(url='http://app-django:8000/event/entry_hook/', json=json_payload)
+
+        async with httpx.AsyncClient() as client:
+            await client.post(url='http://app-django:8000/event/entry_hook/', json=json_payload)
         print("Sent!")
 
 

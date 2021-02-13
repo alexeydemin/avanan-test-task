@@ -1,2 +1,2 @@
 aiobotocore==1.2.1
-requests==2.25.1
+httpx==0.16.1
