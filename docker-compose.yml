@@ -21,6 +21,21 @@ services:
     networks:
       - app-network
 
+  db-mysql:
+    restart: always
+    image: mysql:5.7
+    container_name: db-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "strong_root_password"
+    command: --init-file /data/application/init.sql
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./django/avanan/init.sql:/data/application/init.sql
+    networks:
+      - app-network
+
   app-dlp:
     build:
       context: dlp
