@@ -7,7 +7,7 @@
 `files:read`, `im:read`, `im:history`, `channels:history`
 6. Do git clone
 7. Do `cp .env.example .env` and edit VERIFICATION_TOKEN, BOT_USER_ACCESS_TOKEN, AWS_ACCESS_KEY_ID , AWS_SECRET_ACCESS_KEY values.
-8. in the project directory run `docker-compose run -d`
+8. in the project directory run `docker-compose --env-file .env up -d`
 9. Go to http://localhost:8000/admin/ credentials alex/alex, add a few patterns and send a message/file to #general
 10. Check if it was caught on http://localhost:8000/admin/web/entry/
 11. (Optionally) See `docker logs --follow app-django`
